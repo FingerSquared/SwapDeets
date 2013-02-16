@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Contact Example</title>
+        
+        <link rel="stylesheet" href="css/foundation.css" />
+        <script type="text/javascript" charset="utf-8" src="cordova-2.4.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/parsley.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            
+            // Wait for Cordova to load
+            //
+            document.addEventListener("deviceready", onDeviceReady, false);
+            
+            // Cordova is ready
+            //
+                        
+            function onDeviceReady() {
+                $('#newContactForm').on('submit', function() {
+                    // create a new contact
+                    var contact = navigator.contacts.create();
+                    
+                    var name = new ContactName();
+                    name.givenName = $('#firstname').val();
+                    name.familyName = $('#lastname').val();
+                    contact.name = name;
+                    
+                    var phoneNumbers = [];
+                    phoneNumbers[0] = new ContactField('work', $('#phonenumber').val(), false);
+                    contact.phoneNumbers = phoneNumbers;
+                    
+                    var emailAddresses = [];
+                    emailAddresses[0] = new ContactField('work', $('#emailaddress').val(), false);
+                    contact.emails = emailAddresses;
+                                        
+                    // save the contact
+                    contact.save(onSuccess, onError);
+                  });
+            }
+            
+            // onSuccess: Get a snapshot of the current contacts
+            //
+            function onSuccess(contacts) {
+            }
+            
+            // onError: Failed to get the contacts
+            //
+            function onError(contactError) {
+                alert('onError!');
+            }
+            
+        </script>
+    </head>
+    <body>
+        <div class="row">
+            <div class="twelve columns">
+                <div class="panel">
+                    <form id="newContactForm" data-validate="parsley">
+                        <fieldset>
+                            <legend>Contact Info</legend>
+                                <input id="firstname" type="text" placeholder="First Name" data-trigger="change" data-required="true">
+                                <input id="lastname" type="text" placeholder="Last Name">
+                                <input id="phonenumber" type="text" placeholder="Phone Number" data-trigger="change" data-type="number">
+                                <input id="emailaddress" type="text" placeholder="Email Address" data-trigger="change" data-type="email" data-required="true">
+                        </fieldset>
+                        <input type="submit" value="Add" class="button" id="submitButton">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
