@@ -1,42 +1,132 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
+<head>
+  <title>Contact Example</title>
+
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/foundation.css" />
+  <link rel="stylesheet" href="css/toggle-switch.css" />
+  <script type="text/javascript" charset="utf-8" src="cordova-2.4.0.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/parsley.js"></script>
+  <script type="text/javascript" charset="utf-8" src="js/foundation.min.js"></script>
+  	<style type="text/css">
+		#businessContact{
+			display: none;
+		}
+		#form{
+			min-height: 350px;
+		}
+	</style>
+
+</head>
+<body>
+<br>
+<br>
+
+<div class='row'>
+  <div class='small-12 columns'>
+    <div class='panel'>
+      <div class='row'>
+        <div class='small-12 columns'>
+          <div class="switch2 android panel">
+            <input id="pContact" name="contactType" type="radio" value='personal' checked>
+            <label for="pContact" onclick="">Personal</label>
+
+            <input id="bContact" name="contactType" type="radio" value='business'>  
+            <label for="bContact" onclick="">Business</label>
+
+            <span class="slide-button button"></span>
+          </div>
         </div>
-        <script type="text/javascript" src="cordova-2.4.0.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-        </script>
-    </body>
+      </div>
+      <div class='row' id='form'>
+        <div class='small-12 columns' id='personalContact'>
+          <form data-validate='parsley'>
+            <fieldset>
+              <legend>Personal Contact</legend>
+              <input id='firstname' type='text' placeholder='First Name'/>
+              <input id='lastname' type='text' placeholder='Last Name'/>
+              <input id='phonenumber' type='text' placeholder='Phone Number'/>
+              <input id='emailaddress' type='text' placeholder='Email Address'/>
+            </fieldset>
+            <input type='submit' value='Add Contact' class='button small-12'/>
+          </form>
+        </div>
+        <div class='small-12 columns' id='businessContact'>
+          <form data-validate='parsley'>
+            <fieldset>
+              <legend>Business Contact</legend>
+              <input id='firstname' type='text' placeholder='First Name'/>
+              <input id='lastname' type='text' placeholder='Last Name'/>
+              <input id='phonenumber' type='text' placeholder='Phone Number'/>
+              <input id='emailaddress' type='text' placeholder='Email Address'/>
+            </fieldset>
+            <input type='submit' value='Add Contact' class='button small-12'/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script type="text/javascript" charset="utf-8">
+
+  $(document).foundation();
+
+$(document).ready(function(){
+  $('[type=radio]').on('click', function(){
+    if($(this).val() == 'personal'){
+      $('#businessContact').slideToggle();
+      $('#personalContact').slideToggle();
+    } else if($(this).val() == 'business') {
+      $('#personalContact').slideToggle();
+      $('#businessContact').slideToggle();
+    }
+  });
+});
+
+  // Wait for Cordova to load
+  //
+  document.addEventListener("deviceready", onDeviceReady, false);
+  
+  // Cordova is ready
+  //
+
+  function onDeviceReady() {
+    $('#newContactForm').on('submit', function() {
+          // create a new contact
+          var contact = navigator.contacts.create();
+          
+          var name = new ContactName();
+          name.givenName = $('#firstname').val();
+          name.familyName = $('#lastname').val();
+          contact.name = name;
+          
+          var phoneNumbers = [];
+          phoneNumbers[0] = new ContactField('work', $('#phonenumber').val(), false);
+          contact.phoneNumbers = phoneNumbers;
+          
+          var emailAddresses = [];
+          emailAddresses[0] = new ContactField('work', $('#emailaddress').val(), false);
+          contact.emails = emailAddresses;
+
+          // save the contact
+          contact.save(onSuccess, onError);
+        });
+  }
+  
+  // onSuccess: Get a snapshot of the current contacts
+  //
+  function onSuccess(contacts) {
+  }
+  
+  // onError: Failed to get the contacts
+  //
+  function onError(contactError) {
+    alert('onError!');
+  }
+  
+  </script>
+</body>
 </html>
